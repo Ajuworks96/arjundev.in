@@ -174,20 +174,28 @@ export default function Mentorship() {
                 <button
                   key={profile.id}
                   onClick={() => setSelectedProfile(profile)}
-                  className={`w-full flex items-start gap-4 p-4 text-left rounded-2xl border transition-all duration-200 cursor-pointer ${
+                  className={`w-full flex items-start gap-4 p-4 text-left rounded-2xl border transition-all duration-300 cursor-pointer group ${
                     isSelected 
-                      ? "bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/10" 
-                      : "bg-white hover:bg-slate-50 border-slate-200 text-slate-800 dark:bg-slate-900 dark:hover:bg-slate-850 dark:border-slate-800 dark:text-slate-200"
+                      ? "bg-[#ffff3f] border-[#ffff3f] text-[#050912] shadow-lg shadow-[#ffff3f]/10" 
+                      : "bg-[#070b16]/60 border-slate-900/60 hover:border-[#ffff3f]/20 hover:bg-[#070b16]/90 text-slate-350"
                   }`}
                 >
-                  <div className={`p-2.5 rounded-xl flex-shrink-0 ${
-                    isSelected ? "bg-blue-500 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+                  <div className={`p-2.5 rounded-xl flex-shrink-0 transition-colors ${
+                    isSelected 
+                      ? "bg-[#050912] text-[#ffff3f]" 
+                      : "bg-slate-950/60 border border-slate-900 text-slate-500 group-hover:text-[#ffff3f]"
                   }`}>
                     {profile.icon}
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold">{profile.label}</h3>
-                    <p className={`text-xs mt-1 leading-relaxed ${isSelected ? "text-blue-100" : "text-slate-450"}`}>
+                    <h3 className={`text-sm font-black uppercase tracking-wide transition-colors ${
+                      isSelected ? "text-[#050912]" : "text-white group-hover:text-[#ffff3f]"
+                    }`}>
+                      {profile.label}
+                    </h3>
+                    <p className={`text-xs mt-1 leading-relaxed transition-colors ${
+                      isSelected ? "text-[#050912]/80 font-medium" : "text-slate-400"
+                    }`}>
                       {profile.description}
                     </p>
                   </div>

@@ -1,0 +1,190 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // Hashed password
+  name      String
+  role      String   @default("Editor") // SuperAdmin, Editor, ContentWriter, Guest
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sessions  Session[]
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Profile {
+  id           String   @id @default("singleton")
+  name         String
+  tagline      String
+  about        String
+  biography    String
+  journeyIntro String
+  mission      String
+  vision       String
+  socialLinks  Json     // Map of social handles
+  availability String   // e.g. "Available for projects"
+  resumeUrl    String?
+  avatarUrl    String?
+  coverUrl     String?
+  updatedAt    DateTime @updatedAt
+}
+
+model HeroSettings {
+  id           String   @id @default("singleton")
+  headline     String
+  animatedText String   // Comma separated list
+  subtitle     String
+  ctaPrimary   String
+  ctaPrimaryUrl String
+  ctaSecondary String
+  ctaSecondaryUrl String
+  bgSettings   Json
+  updatedAt    DateTime @updatedAt
+}
+
+model Milestone {
+  id           String   @id @default(uuid())
+  role         String
+  organization String
+  period       String
+  description  String
+  lessons      String[]
+  achievements String[]
+  technologies String[]
+  mindset      String
+  orderIndex   Int      @default(0)
+  createdAt    DateTime @default(now())
+}
+
+model Project {
+  id           String   @id @default(uuid())
+  title        String
+  slug         String   @unique
+  category     String
+  client       String
+  role         String
+  duration     String
+  technologies String[]
+  problem      String
+  research     String?
+  wireframes   String?
+  ui           String?
+  development  String?
+  testing      String?
+  deployment   String?
+  result       String
+  metrics      Json?
+  images       String[]
+  githubUrl    String?
+  liveUrl      String?
+  featured     Boolean  @default(false)
+  status       String   @default("Draft") // Draft, Published, Archived
+  seoTitle     String?
+  seoDescription String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Article {
+  id           String   @id @default(uuid())
+  title        String
+  slug         String   @unique
+  content      String   @db.Text
+  tags         String[]
+  categories   String[]
+  draft        Boolean  @default(true)
+  seoTitle     String?
+  seoDescription String?
+  publishedAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model MediaItem {
+  id           String   @id @default(uuid())
+  url          String
+  filename     String
+  mimeType     String
+  size         Int
+  altText      String?
+  createdAt    DateTime @default(now())
+}
+
+model Course {
+  id           String   @id @default(uuid())
+  title        String
+  slug         String   @unique
+  description  String
+  price        Float
+  lessons      Lesson[]
+  createdAt    DateTime @default(now())
+}
+
+model Lesson {
+  id           String   @id @default(uuid())
+  title        String
+  content      String   @db.Text
+  videoUrl     String?
+  courseId     String
+  course       Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model Testimonial {
+  id           String   @id @default(uuid())
+  name         String
+  role         String
+  company      String
+  avatarUrl    String?
+  rating       Int      @default(5)
+  content      String
+  approved     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model Faq {
+  id           String   @id @default(uuid())
+  question     String
+  answer       String
+  category     String
+  orderIndex   Int      @default(0)
+}
+
+model Statistic {
+  id           String   @id @default(uuid())
+  value        String   // e.g. "1000+"
+  label        String   // e.g. "Students"
+  orderIndex   Int      @default(0)
+}
+
+model Lead {
+  id           String   @id @default(uuid())
+  name         String
+  email        String
+  subject      String?
+  message      String
+  type         String   // contact, booking, newsletter
+  status       String   @default("Pending") // Pending, Processed
+  createdAt    DateTime @default(now())
+}
+
+model CmsConfig {
+  id           String   @id @default("singleton")
+  provider     String   @default("Local") // Local, WordPress, Strapi, Payload, Sanity, Directus
+  apiUrl       String?
+  apiKey       String?
+  updatedAt    DateTime @updatedAt
+}

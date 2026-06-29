@@ -1,26 +1,192 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #0f172a;
+    --secondary-bg: #f8fafc;
+    --border-color: #e2e8f0;
+    --accent: #ffff3f;
+    --accent-hover: #f0f000;
+    --accent-text: #b45309; /* Deep amber for readability on white */
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --card-border: rgba(226, 232, 240, 0.8);
+    --text-muted: #64748b;
+  }
+
+  .dark {
+    --background: #090d16;
+    --foreground: #f8fafc;
+    --secondary-bg: #0f172a;
+    --border-color: #1e293b;
+    --accent: #ffff3f; /* Bright neon yellow for dark mode */
+    --accent-hover: #facc15;
+    --accent-text: #ffff3f; /* Neon yellow text for dark backgrounds */
+    --card-bg: rgba(15, 23, 42, 0.7);
+    --card-border: rgba(30, 41, 59, 0.8);
+    --text-muted: #94a3b8;
+  }
+
+  * {
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
+    transition: background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
 
-body {
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
   background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 9999px;
+  border: 2px solid var(--background);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Custom Glow/Spotlight Effect (Yellow/Gold) */
+.cursor-glow {
+  background: radial-gradient(
+    600px circle at var(--x, 0px) var(--y, 0px),
+    rgba(255, 255, 63, 0.04),
+    transparent 80%
+  );
+}
+
+.dark .cursor-glow {
+  background: radial-gradient(
+    800px circle at var(--x, 0px) var(--y, 0px),
+    rgba(255, 255, 63, 0.06),
+    transparent 80%
+  );
+}
+
+/* Animated Grid Background */
+.grid-bg {
+  background-image: 
+    linear-gradient(to right, var(--border-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border-color) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.15;
+}
+
+.dark .grid-bg {
+  opacity: 0.07;
+}
+
+/* Mask for Hero grid to fade out at edges */
+.grid-mask {
+  mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 85%);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 85%);
+}
+
+/* Text highlighting transitions for Scroll Reveal */
+.scroll-reveal-text span {
+  transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Custom Hide Scrollbar Utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Smooth glass effect helper */
+.glassmorphism {
+  background-color: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+}
+
+/* Typography styles */
+.text-balance-custom {
+  text-wrap: balance;
+}
+
+/* Color Theme Overrides: Forces all Blue/Indigo utilities to Yellow */
+.bg-blue-600, .bg-blue-500, .bg-indigo-600 {
+  background-color: var(--accent) !important;
+  color: #0f172a !important; /* Forces dark slate text for readability */
+}
+.dark .bg-blue-600, .dark .bg-blue-500, .dark .bg-indigo-600 {
+  color: #090d16 !important;
+}
+
+.hover\:bg-blue-700:hover, .hover\:bg-blue-600:hover, .hover\:bg-indigo-700:hover {
+  background-color: var(--accent-hover) !important;
+}
+
+.text-blue-600, .text-blue-500, .text-indigo-655, .text-indigo-600 {
+  color: var(--accent-text) !important;
+}
+.dark .text-blue-655, .dark .text-blue-600, .dark .text-blue-500, .dark .text-indigo-600 {
+  color: var(--accent) !important;
+}
+
+.text-blue-400, .text-sky-500 {
+  color: var(--accent-text) !important;
+}
+.dark .text-blue-400, .dark .text-sky-500 {
+  color: var(--accent) !important;
+}
+
+.border-blue-600, .border-blue-500 {
+  border-color: var(--accent) !important;
+}
+
+.border-blue-500\/20, .border-blue-500\/30 {
+  border-color: rgba(255, 255, 63, 0.2) !important;
+}
+
+.bg-blue-500\/10, .bg-blue-600\/10 {
+  background-color: rgba(255, 255, 63, 0.1) !important;
+  color: var(--accent-text) !important;
+}
+.dark .bg-blue-500\/10, .dark .bg-blue-600\/10 {
+  color: var(--accent) !important;
+}
+
+.bg-blue-50\/40 {
+  background-color: rgba(255, 255, 63, 0.05) !important;
+}
+.dark .bg-blue-950\/20 {
+  background-color: rgba(255, 255, 63, 0.03) !important;
+}
+
+.from-blue-600 {
+  --tw-gradient-from: var(--accent) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(255, 255, 63, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+.to-indigo-600 {
+  --tw-gradient-to: var(--accent-hover) var(--tw-gradient-to-position) !important;
+}
+
+.from-indigo-600 {
+  --tw-gradient-from: var(--accent-hover) var(--tw-gradient-from-position) !important;
+}
+
+.shadow-blue-500\/10 {
+  box-shadow: 0 4px 6px -1px rgba(255, 255, 63, 0.05), 0 2px 4px -2px rgba(255, 255, 63, 0.05) !important;
+}
+.shadow-blue-500\/30 {
+  box-shadow: 0 10px 15px -3px rgba(255, 255, 63, 0.15), 0 4px 6px -4px rgba(255, 255, 63, 0.15) !important;
 }

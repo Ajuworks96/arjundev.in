@@ -176,25 +176,25 @@ export default function Mentorship() {
                   onClick={() => setSelectedProfile(profile)}
                   className={`w-full flex items-start gap-4 p-4 text-left rounded-2xl border transition-all duration-300 cursor-pointer group ${
                     isSelected 
-                      ? "bg-[#ffff3f] border-[#ffff3f] text-[#050912] shadow-lg shadow-[#ffff3f]/10" 
-                      : "bg-[#070b16]/60 border-slate-900/60 hover:border-[#ffff3f]/20 hover:bg-[#070b16]/90 text-slate-350"
+                      ? "bg-[#ffff3f] border-[#ffff3f] text-slate-950 shadow-lg shadow-[#ffff3f]/10" 
+                      : "bg-[#070b16]/60 border-slate-900/60 hover:bg-white hover:border-white text-slate-350"
                   }`}
                 >
-                  <div className={`p-2.5 rounded-xl flex-shrink-0 transition-colors ${
+                  <div className={`p-2.5 rounded-xl flex-shrink-0 transition-all ${
                     isSelected 
-                      ? "bg-[#050912] text-[#ffff3f]" 
-                      : "bg-slate-950/60 border border-slate-900 text-slate-500 group-hover:text-[#ffff3f]"
+                      ? "bg-slate-950 text-[#ffff3f]" 
+                      : "bg-slate-950/60 border border-slate-900 text-slate-500 group-hover:bg-slate-100 group-hover:border-slate-200 group-hover:text-slate-900"
                   }`}>
                     {profile.icon}
                   </div>
                   <div>
                     <h3 className={`text-sm font-black uppercase tracking-wide transition-colors ${
-                      isSelected ? "text-[#050912]" : "text-white group-hover:text-[#ffff3f]"
+                      isSelected ? "text-slate-950" : "text-white group-hover:text-slate-950"
                     }`}>
                       {profile.label}
                     </h3>
                     <p className={`text-xs mt-1 leading-relaxed transition-colors ${
-                      isSelected ? "text-[#050912]/80 font-medium" : "text-slate-400"
+                      isSelected ? "text-slate-950 font-medium" : "text-slate-400 group-hover:text-slate-800"
                     }`}>
                       {profile.description}
                     </p>

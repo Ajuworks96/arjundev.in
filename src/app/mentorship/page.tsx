@@ -213,42 +213,42 @@ export default function Mentorship() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className="glassmorphism p-8 rounded-3xl border border-slate-200/60 dark:border-slate-800/60 shadow-xl space-y-6"
+                className="glassmorphism p-8 rounded-3xl border border-slate-900/60 shadow-xl space-y-6"
               >
                 <div>
-                  <span className="text-[10px] uppercase font-bold tracking-widest text-blue-600 dark:text-blue-400">RECOMMENDED PATHWAY</span>
-                  <h3 className="text-xl font-black text-slate-900 dark:text-white mt-1">{selectedProfile.roadmapTitle}</h3>
+                  <span className="text-[10px] uppercase font-bold tracking-widest text-[#ffff3f]">RECOMMENDED PATHWAY</span>
+                  <h3 className="text-xl font-black text-white mt-1">{selectedProfile.roadmapTitle}</h3>
                 </div>
 
                 {/* Steps List */}
                 <div className="space-y-3">
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                    <ListChecks className="w-4 h-4 text-blue-500" />
+                    <ListChecks className="w-4 h-4 text-[#ffff3f]" />
                     Step-by-Step Milestones
                   </h4>
                   <ol className="space-y-3">
                     {selectedProfile.roadmapSteps.map((step, idx) => (
-                      <li key={idx} className="flex gap-3 text-xs sm:text-sm text-slate-705 dark:text-slate-300">
-                        <span className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-600 dark:text-blue-450 flex items-center justify-center font-bold text-[10px]">
+                      <li key={idx} className="flex gap-3 text-xs sm:text-sm text-slate-200">
+                        <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#ffff3f] text-[#050912] flex items-center justify-center font-black text-[10px]">
                           {idx + 1}
                         </span>
-                        <span className="leading-relaxed">{step}</span>
+                        <span className="leading-relaxed font-medium">{step}</span>
                       </li>
                     ))}
                   </ol>
                 </div>
 
-                <div className="h-px bg-slate-200/40 dark:bg-slate-800/40" />
+                <div className="h-px bg-slate-900/60" />
 
                 {/* Programs */}
                 <div className="space-y-2">
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                    <BookOpen className="w-4 h-4 text-indigo-500" />
+                    <BookOpen className="w-4 h-4 text-[#ffff3f]" />
                     Recommended Program Modules
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {selectedProfile.recommendedPrograms.map((prog, idx) => (
-                      <span key={idx} className="text-[10px] font-bold px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 rounded-lg">
+                      <span key={idx} className="text-[10px] font-bold px-3 py-1.5 bg-[#ffff3f]/5 border border-[#ffff3f]/20 text-[#ffff3f] rounded-lg">
                         {prog}
                       </span>
                     ))}
@@ -259,7 +259,7 @@ export default function Mentorship() {
                 <div className="pt-4">
                   <a
                     href="/contact"
-                    className="w-full flex items-center justify-center gap-2 py-3.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white text-xs font-bold rounded-2xl shadow-md transition-colors"
+                    className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#ffff3f] hover:bg-yellow-500 text-slate-950 text-xs font-black rounded-2xl shadow-lg transition-colors"
                   >
                     <span>{selectedProfile.ctaText}</span>
                     <ArrowRight className="w-4 h-4" />

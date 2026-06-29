@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Play, Video, Youtube, ExternalLink, Calendar } from "lucide-react";
+import { Play, Video, Youtube, ExternalLink, Calendar, Instagram, Linkedin, Github } from "lucide-react";
 
 interface MediaItem {
   id: string;
@@ -30,7 +30,7 @@ const MEDIA_ITEMS: MediaItem[] = [
     category: "Reels",
     date: "Jun 02, 2026",
     duration: "0:58",
-    url: "https://instagram.com",
+    url: "https://instagram.com/arjundev.in",
     description: "A short clip on how to manage cognitive fatigue, study effectively after long work shifts, and maintain consistency."
   },
   {
@@ -53,6 +53,37 @@ const MEDIA_ITEMS: MediaItem[] = [
   }
 ];
 
+const SOCIAL_CHANNELS = [
+  {
+    name: "YouTube",
+    subtitle: "Subscribe for tutorials",
+    icon: <Youtube className="w-5 h-5 text-red-500" />,
+    url: "https://youtube.com",
+    description: "OOP WordPress coding, Shopify setup guides, and Next.js tutorials."
+  },
+  {
+    name: "Instagram",
+    subtitle: "Follow daily reels",
+    icon: <Instagram className="w-5 h-5 text-pink-500" />,
+    url: "https://instagram.com/arjundev.in",
+    description: "Developer mindset clips, career transition advice, and Shopify store tricks."
+  },
+  {
+    name: "LinkedIn",
+    subtitle: "Let's connect",
+    icon: <Linkedin className="w-5 h-5 text-sky-500" />,
+    url: "https://linkedin.com",
+    description: "Tech industry updates, client workflows, and personal brand insights."
+  },
+  {
+    name: "GitHub",
+    subtitle: "Clone repositories",
+    icon: <Github className="w-5 h-5 text-white" />,
+    url: "https://github.com/Ajuworks96",
+    description: "Open-source boilerplate codes, Tailwind kits, and portfolio systems."
+  }
+];
+
 export default function Media() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
 
@@ -61,7 +92,7 @@ export default function Media() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8 space-y-12">
+    <div className="max-w-5xl mx-auto px-6 py-8 space-y-16">
       
       {/* Header */}
       <section className="text-center max-w-2xl mx-auto space-y-4">
@@ -74,16 +105,44 @@ export default function Media() {
         </p>
       </section>
 
+      {/* Social Platforms Connection Grid */}
+      <section className="space-y-4">
+        <h2 className="text-xs font-black uppercase tracking-widest text-slate-400">Connected Channels</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {SOCIAL_CHANNELS.map((channel) => (
+            <a
+              key={channel.name}
+              href={channel.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="glassmorphism p-5 rounded-2xl border border-slate-900/60 flex flex-col justify-between space-y-3 cursor-pointer transition-all duration-300 hover:bg-white hover:border-white hover:text-slate-950 group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="p-2.5 bg-slate-950/60 border border-slate-900 text-slate-550 rounded-xl group-hover:bg-slate-100 group-hover:border-slate-200 transition-colors">
+                  {channel.icon}
+                </div>
+                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest group-hover:text-slate-700">Connect &rarr;</span>
+              </div>
+              <div>
+                <h3 className="text-xs font-black uppercase tracking-wider text-white group-hover:text-slate-950">{channel.name}</h3>
+                <p className="text-[9px] font-bold text-slate-500 uppercase tracking-wide group-hover:text-slate-655 mt-0.5">{channel.subtitle}</p>
+                <p className="text-[11px] text-slate-400 group-hover:text-slate-800 leading-relaxed mt-2">{channel.description}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
       {/* Category filters */}
-      <div className="flex gap-1.5 overflow-x-auto w-full no-scrollbar justify-start sm:justify-center border-b border-slate-200/50 dark:border-slate-800/50 pb-6">
+      <div className="flex gap-1.5 overflow-x-auto w-full no-scrollbar justify-start border-b border-slate-200/50 dark:border-slate-800/50 pb-6">
         {["All", "YouTube", "Reels", "Talks"].map((cat) => (
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 cursor-pointer ${
               activeCategory === cat
-                ? "bg-blue-600 text-white shadow-md shadow-blue-500/10"
-                : "bg-slate-100 hover:bg-slate-200/60 text-slate-650 dark:bg-slate-900 dark:hover:bg-slate-850 dark:text-slate-400"
+                ? "bg-[#ffff3f] text-slate-950 shadow-lg shadow-[#ffff3f]/10"
+                : "bg-[#070b16]/60 border border-slate-900/60 hover:bg-white hover:text-slate-950 hover:border-white text-slate-350"
             }`}
           >
             {cat}
@@ -109,7 +168,7 @@ export default function Media() {
               <span className="absolute bottom-3 right-3 text-[10px] bg-black/60 text-white px-2 py-0.5 rounded font-bold">{item.duration}</span>
               
               {/* Category indicator badge */}
-              <span className="absolute top-3 left-3 text-[9px] bg-blue-600 text-white px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+              <span className="absolute top-3 left-3 text-[9px] bg-[#ffff3f] text-slate-950 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
                 {item.category}
               </span>
             </div>
@@ -134,7 +193,7 @@ export default function Media() {
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-1.5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white text-xs font-bold rounded-xl transition-all cursor-pointer"
+                  className="w-full flex items-center justify-center gap-1.5 py-2.5 bg-[#ffff3f] hover:bg-yellow-500 text-slate-950 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md"
                 >
                   <span>Watch Content</span>
                   <ExternalLink className="w-3.5 h-3.5" />

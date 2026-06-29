@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Play, Video, Youtube, ExternalLink, Calendar, Instagram, Linkedin, Github } from "lucide-react";
 
@@ -86,8 +86,29 @@ const SOCIAL_CHANNELS = [
 
 export default function Media() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>(MEDIA_ITEMS);
+  const [loading, setLoading] = useState(true);
 
-  const filteredMedia = MEDIA_ITEMS.filter(item => 
+  useEffect(() => {
+    async function loadSocialFeed() {
+      try {
+        const res = await fetch("/api/social-feed");
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            setMediaItems(data);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load live social feed:", e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadSocialFeed();
+  }, []);
+
+  const filteredMedia = mediaItems.filter(item => 
     activeCategory === "All" || item.category === activeCategory
   );
 

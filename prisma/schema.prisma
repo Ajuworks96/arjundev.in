@@ -182,9 +182,13 @@ model Lead {
 }
 
 model CmsConfig {
-  id           String   @id @default("singleton")
-  provider     String   @default("Local") // Local, WordPress, Strapi, Payload, Sanity, Directus
-  apiUrl       String?
-  apiKey       String?
-  updatedAt    DateTime @updatedAt
+  id                   String   @id @default("singleton")
+  provider             String   @default("Local") // Local, WordPress, Strapi, Payload, Sanity, Directus
+  apiUrl               String?
+  apiKey               String?
+  youtubeChannelId     String?
+  youtubeApiKey        String?
+  instagramAccessToken String?
+  linkedinFeedUrl      String?
+  updatedAt            DateTime @updatedAt
 }

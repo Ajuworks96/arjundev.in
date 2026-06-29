@@ -12,6 +12,10 @@ export default function AdminSettingsManager() {
     provider: "Local",
     apiUrl: "",
     apiKey: "",
+    youtubeChannelId: "",
+    youtubeApiKey: "",
+    instagramAccessToken: "",
+    linkedinFeedUrl: "",
   });
 
   useEffect(() => {
@@ -24,6 +28,10 @@ export default function AdminSettingsManager() {
             provider: data.provider || "Local",
             apiUrl: data.apiUrl || "",
             apiKey: data.apiKey || "",
+            youtubeChannelId: data.youtubeChannelId || "",
+            youtubeApiKey: data.youtubeApiKey || "",
+            instagramAccessToken: data.instagramAccessToken || "",
+            linkedinFeedUrl: data.linkedinFeedUrl || "",
           });
         }
       } catch (e) {
@@ -142,6 +150,59 @@ export default function AdminSettingsManager() {
               </div>
             </motion.div>
           )}
+        </div>
+
+        {/* Social Feed Credentials Card */}
+        <div className="glassmorphism p-6 rounded-2xl border border-slate-900 space-y-5">
+          <h3 className="text-xs font-black uppercase tracking-wider text-white border-b border-slate-900 pb-2">Social Feed Integrations</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">YouTube Channel ID</label>
+              <input
+                type="text"
+                value={form.youtubeChannelId}
+                onChange={(e) => setForm({ ...form, youtubeChannelId: e.target.value })}
+                placeholder="e.g. UCxxxxxxxxx"
+                className="w-full px-4 py-2.5 bg-slate-950/60 border border-slate-800 focus:border-yellow-400/40 rounded-xl outline-none text-xs text-white placeholder-slate-600 transition-colors font-mono"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">YouTube Data API Key</label>
+              <input
+                type="password"
+                value={form.youtubeApiKey}
+                onChange={(e) => setForm({ ...form, youtubeApiKey: e.target.value })}
+                placeholder="AIzaSy..."
+                className="w-full px-4 py-2.5 bg-slate-950/60 border border-slate-800 focus:border-yellow-400/40 rounded-xl outline-none text-xs text-white placeholder-slate-655 transition-colors font-mono"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">Instagram Access Token</label>
+              <input
+                type="password"
+                value={form.instagramAccessToken}
+                onChange={(e) => setForm({ ...form, instagramAccessToken: e.target.value })}
+                placeholder="IGQVJ..."
+                className="w-full px-4 py-2.5 bg-slate-950/60 border border-slate-800 focus:border-yellow-400/40 rounded-xl outline-none text-xs text-white placeholder-slate-655 transition-colors font-mono"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">LinkedIn RSS/Profile Feed URL</label>
+              <input
+                type="text"
+                value={form.linkedinFeedUrl}
+                onChange={(e) => setForm({ ...form, linkedinFeedUrl: e.target.value })}
+                placeholder="https://feed.linkedin..."
+                className="w-full px-4 py-2.5 bg-slate-950/60 border border-slate-800 focus:border-yellow-400/40 rounded-xl outline-none text-xs text-white placeholder-slate-600 transition-colors font-mono"
+              />
+            </div>
+          </div>
         </div>
 
         <button

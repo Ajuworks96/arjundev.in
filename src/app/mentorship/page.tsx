@@ -256,13 +256,23 @@ export default function Mentorship() {
                 </div>
 
                 {/* Consult Call CTA */}
-                <div className="pt-4">
+                <div className="pt-4 flex flex-col sm:flex-row gap-3">
                   <a
-                    href="/contact"
-                    className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#ffff3f] hover:bg-yellow-500 text-slate-950 text-xs font-black rounded-2xl shadow-lg transition-colors"
+                    href="https://cal.com/arjun-poa8ar/easy-to-learn"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-[#ffff3f] hover:bg-yellow-500 text-slate-950 text-xs font-black rounded-2xl shadow-lg transition-all duration-300 cursor-pointer"
                   >
                     <span>{selectedProfile.ctaText}</span>
                     <ArrowRight className="w-4 h-4" />
+                  </a>
+                  <a
+                    href="https://wa.me/918921658090"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 text-white text-xs font-bold rounded-2xl transition-all duration-300 cursor-pointer"
+                  >
+                    <span>Chat on WhatsApp</span>
                   </a>
                 </div>
               </motion.div>

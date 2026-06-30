@@ -50,10 +50,10 @@ export default function Contact() {
           
           {/* Cal.com booking */}
           <a
-            href="https://cal.com"
+            href="https://cal.com/arjun-poa8ar/easy-to-learn"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 p-4 rounded-2xl bg-slate-55 bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 hover:border-blue-500 hover:shadow-md transition-all duration-200 cursor-pointer"
+            className="flex items-center gap-3 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 hover:border-[#ffff3f] hover:shadow-md transition-all duration-200 cursor-pointer"
           >
             <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
             <div className="text-left">
@@ -64,7 +64,7 @@ export default function Contact() {
 
           {/* WhatsApp Chat */}
           <a
-            href="https://wa.me/910000000000"
+            href="https://wa.me/918921658090"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-800/50 hover:border-emerald-500 hover:shadow-md transition-all duration-200 cursor-pointer"

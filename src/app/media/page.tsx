@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Video, Youtube, ExternalLink, Calendar, Instagram, Linkedin, Github, X } from "lucide-react";
+import { Play, Video, Youtube, ExternalLink, Calendar, Instagram, Linkedin, Github, X, MessageSquare } from "lucide-react";
 
 interface MediaItem {
   id: string;
@@ -81,6 +81,20 @@ const SOCIAL_CHANNELS = [
     icon: <Github className="w-5 h-5 text-white" />,
     url: "https://github.com/Ajuworks96",
     description: "Open-source boilerplate codes, Tailwind kits, and portfolio systems."
+  },
+  {
+    name: "Consultation",
+    subtitle: "Book Cal.com Slot",
+    icon: <Calendar className="w-5 h-5 text-[#ffff3f]" />,
+    url: "https://cal.com/arjun-poa8ar/easy-to-learn",
+    description: "Schedule a direct 1-on-1 diagnostic call to audit your coding and design goals."
+  },
+  {
+    name: "WhatsApp Direct",
+    subtitle: "Instant chat",
+    icon: <MessageSquare className="w-5 h-5 text-emerald-500" />,
+    url: "https://wa.me/918921658090",
+    description: "Ping me directly on WhatsApp for quick inquiries or collaborative support."
   }
 ];
 
@@ -137,7 +151,7 @@ export default function Media() {
       {/* Social Platforms Connection Grid */}
       <section className="space-y-4">
         <h2 className="text-xs font-black uppercase tracking-widest text-slate-400">Connected Channels</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {SOCIAL_CHANNELS.map((channel) => (
             <a
               key={channel.name}

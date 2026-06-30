@@ -11,6 +11,7 @@ const LINKS = [
   { href: "/journey", label: "Journey" },
   { href: "/projects", label: "Projects" },
   { href: "/mentorship", label: "Mentorship" },
+  { href: "/learn", label: "Learn" },
   { href: "/notes", label: "Notes" },
   { href: "/media", label: "Media" },
   { href: "/now", label: "Now" },

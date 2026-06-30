@@ -9,6 +9,8 @@ import AskArjunWidget from "./ask-arjun-widget";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
+import { SessionProvider } from "next-auth/react";
+
 export default function ClientShell({ children }: { children: React.ReactNode }) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
@@ -24,7 +26,8 @@ export default function ClientShell({ children }: { children: React.ReactNode })
   }, []);
 
   return (
-    <ThemeProvider>
+    <SessionProvider>
+      <ThemeProvider>
       <LenisProvider>
         {/* Global Premium Background Canvas (Clean mesh auroras and elegant grids) */}
         <div className="fixed inset-0 -z-50 overflow-hidden bg-white dark:bg-[#050912] pointer-events-none transition-colors duration-500 select-none">
@@ -96,5 +99,6 @@ export default function ClientShell({ children }: { children: React.ReactNode })
         </footer>
       </LenisProvider>
     </ThemeProvider>
+    </SessionProvider>
   );
 }

@@ -12,10 +12,12 @@ model User {
   email     String   @unique
   password  String   // Hashed password
   name      String
-  role      String   @default("Editor") // SuperAdmin, Editor, ContentWriter, Guest
+  role      String   @default("Editor") // SuperAdmin, Editor, ContentWriter, Guest, Student
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   sessions  Session[]
+  progress  UserProgress[]
+  stats     UserStats?
 }
 
 model Session {
@@ -125,22 +127,108 @@ model MediaItem {
 }
 
 model Course {
-  id           String   @id @default(uuid())
-  title        String
-  slug         String   @unique
-  description  String
-  price        Float
-  lessons      Lesson[]
-  createdAt    DateTime @default(now())
+  id             String         @id @default(uuid())
+  title          String
+  slug           String         @unique
+  description    String         @db.Text
+  thumbnail      String?
+  duration       String         // e.g. "4 hours"
+  difficulty     String         // e.g. "Beginner"
+  orderIndex     Int            @default(0)
+  modules        Module[]
+  progress       UserProgress[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Module {
+  id             String         @id @default(uuid())
+  title          String
+  description    String?        @db.Text
+  orderIndex     Int            @default(0)
+  courseId       String
+  course         Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons        Lesson[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }
 
 model Lesson {
-  id           String   @id @default(uuid())
-  title        String
-  content      String   @db.Text
-  videoUrl     String?
-  courseId     String
-  course       Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  id             String         @id @default(uuid())
+  title          String
+  slug           String         @unique
+  introMalayalam String         @db.Text // Malayalam intro summary
+  explanation    String         @db.Text // Core concepts in Malayalam
+  realLifeExample String        @db.Text // Analogy / Comparison
+  visualConcept  String?        @db.Text // visual diagram text representation
+  practicalDemo  String?        @db.Text // demo instructions
+  summary        String         @db.Text // bullet summaries
+  miniChallenge  String?        @db.Text // challenge description
+  videoUrl       String?
+  durationMinutes Int           @default(5)
+  orderIndex     Int            @default(0)
+  moduleId       String
+  module         Module         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  downloads      Download[]
+  quizzes        Quiz[]
+  assignments    Assignment[]
+  progress       UserProgress[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Download {
+  id             String         @id @default(uuid())
+  title          String
+  fileUrl        String
+  fileType       String         // e.g., "PDF", "ZIP", "Template"
+  lessonId       String
+  lesson         Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+}
+
+model Quiz {
+  id             String         @id @default(uuid())
+  question       String         @db.Text
+  options        String[]       // Array of choice strings
+  answerIndex    Int            // Index of correct option
+  lessonId       String
+  lesson         Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+}
+
+model Assignment {
+  id             String         @id @default(uuid())
+  title          String
+  description    String         @db.Text
+  lessonId       String
+  lesson         Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+}
+
+model UserProgress {
+  id             String         @id @default(uuid())
+  userId         String
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId       String
+  course         Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonId       String
+  lesson         Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completed      Boolean        @default(false)
+  quizScore      Int?
+  timeSpent      Int            @default(0)
+  lastVisited    DateTime       @default(now())
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@unique([userId, lessonId])
+}
+
+model UserStats {
+  id             String         @id @default(uuid())
+  userId         String         @unique
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  xp             Int            @default(0)
+  streak         Int            @default(0)
+  lastActive     DateTime?
+  badgeList      String[]       // e.g. ["Explorer", "Builder"]
 }
 
 model Testimonial {

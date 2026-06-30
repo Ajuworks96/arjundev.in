@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Play, Video, Youtube, ExternalLink, Calendar, Instagram, Linkedin, Github } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Play, Video, Youtube, ExternalLink, Calendar, Instagram, Linkedin, Github, X } from "lucide-react";
 
 interface MediaItem {
   id: string;
@@ -86,8 +86,16 @@ const SOCIAL_CHANNELS = [
 
 export default function Media() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
-  const [mediaItems, setMediaItems] = useState<MediaItem[]>(MEDIA_ITEMS);
+  const [mediaItems, setMediaItems] = useState<any[]>(MEDIA_ITEMS);
   const [loading, setLoading] = useState(true);
+  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
+
+  // Helper to extract YouTube video ID
+  const getYoutubeId = (url: string) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
 
   useEffect(() => {
     async function loadSocialFeed() {
@@ -156,7 +164,7 @@ export default function Media() {
 
       {/* Category filters */}
       <div className="flex gap-1.5 overflow-x-auto w-full no-scrollbar justify-start border-b border-slate-200/50 dark:border-slate-800/50 pb-6">
-        {["All", "YouTube", "Reels", "Talks"].map((cat) => (
+        {["All", "YouTube", "Reels", "LinkedIn", "Talks"].map((cat) => (
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
@@ -177,19 +185,39 @@ export default function Media() {
           <motion.div
             key={item.id}
             whileHover={{ y: -4 }}
-            className="glassmorphism rounded-2xl border border-slate-200/50 dark:border-slate-800/50 overflow-hidden shadow-sm flex flex-col justify-between"
+            className="glassmorphism rounded-2xl border border-slate-900/60 overflow-hidden shadow-sm flex flex-col justify-between"
           >
             {/* Visual Header representing Video thumbnail */}
             <div className="aspect-video bg-slate-950 flex items-center justify-center relative group overflow-hidden">
-              {/* Overlay play details */}
-              <div className="absolute inset-0 bg-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-200 z-10">
+              {item.thumbnail && (
+                <img 
+                  src={item.thumbnail} 
+                  alt={item.title}
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              )}
+              {/* Dark overlay */}
+              <div className="absolute inset-0 bg-slate-950/60 group-hover:bg-slate-950/30 transition-colors duration-300" />
+              
+              {/* Play icon overlay */}
+              <button 
+                onClick={() => {
+                  const ytid = getYoutubeId(item.url);
+                  if (item.category === "YouTube" && ytid) {
+                    setActiveVideoId(ytid);
+                  } else {
+                    window.open(item.url, "_blank");
+                  }
+                }}
+                className="w-12 h-12 rounded-full bg-white/20 hover:bg-white/35 backdrop-blur text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200 z-10 cursor-pointer"
+              >
                 <Play className="w-5 h-5 fill-current" />
-              </div>
-              <span className="absolute bottom-3 right-3 text-[10px] bg-black/60 text-white px-2 py-0.5 rounded font-bold">{item.duration}</span>
+              </button>
+              
+              <span className="absolute bottom-3 right-3 text-[10px] bg-black/60 text-white px-2 py-0.5 rounded font-bold z-10">{item.duration}</span>
               
               {/* Category indicator badge */}
-              <span className="absolute top-3 left-3 text-[9px] bg-[#ffff3f] text-slate-950 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+              <span className="absolute top-3 left-3 text-[9px] bg-[#ffff3f] text-slate-950 px-2 py-0.5 rounded font-bold uppercase tracking-wider z-10">
                 {item.category}
               </span>
             </div>
@@ -209,21 +237,58 @@ export default function Media() {
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-slate-200/40 dark:border-slate-800/40">
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+              <div className="pt-4 border-t border-slate-250/10 dark:border-slate-800/40">
+                <button
+                  onClick={() => {
+                    const ytid = getYoutubeId(item.url);
+                    if (item.category === "YouTube" && ytid) {
+                      setActiveVideoId(ytid);
+                    } else {
+                      window.open(item.url, "_blank");
+                    }
+                  }}
                   className="w-full flex items-center justify-center gap-1.5 py-2.5 bg-[#ffff3f] hover:bg-yellow-500 text-slate-950 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md"
                 >
-                  <span>Watch Content</span>
+                  <span>{item.category === "YouTube" ? "Play Video" : "Open Post"}</span>
                   <ExternalLink className="w-3.5 h-3.5" />
-                </a>
+                </button>
               </div>
             </div>
           </motion.div>
         ))}
       </div>
+
+      {/* Dynamic YouTube Video Modal Player */}
+      <AnimatePresence>
+        {activeVideoId && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 sm:p-6">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative w-full max-w-4xl aspect-video bg-black rounded-3xl overflow-hidden border border-slate-800 shadow-2xl"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setActiveVideoId(null)}
+                className="absolute top-4 right-4 z-20 p-2.5 bg-slate-950/60 hover:bg-slate-900 border border-slate-800 text-white rounded-full transition-colors cursor-pointer"
+                title="Close Player"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {/* YouTube Player Iframe */}
+              <iframe
+                src={`https://www.youtube.com/embed/${activeVideoId}?autoplay=1&rel=0`}
+                title="YouTube Video Player"
+                className="w-full h-full border-none"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

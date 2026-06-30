@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "../../../lib/db";
 
-// Fallback curated feed items if APIs are not configured
+// Fallback curated feed items with default thumbnails
 const DEFAULT_FEED = [
   {
     id: "wp-tutorial",
@@ -10,6 +10,7 @@ const DEFAULT_FEED = [
     date: "May 15, 2026",
     duration: "42:15",
     url: "https://youtube.com",
+    thumbnail: "https://images.unsplash.com/photo-1618401471353-b98aedd07871?auto=format&fit=crop&w=640&q=80",
     description: "An in-depth coding guide building a WordPress theme with modern PHP namespaces, separate view scripts, and custom tailwind setups."
   },
   {
@@ -19,6 +20,7 @@ const DEFAULT_FEED = [
     date: "Jun 02, 2026",
     duration: "0:58",
     url: "https://instagram.com/arjundev.in",
+    thumbnail: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=640&q=80",
     description: "A short clip on how to manage cognitive fatigue, study effectively after long work shifts, and maintain consistency."
   },
   {
@@ -28,6 +30,7 @@ const DEFAULT_FEED = [
     date: "Apr 29, 2026",
     duration: "28:40",
     url: "https://youtube.com",
+    thumbnail: "https://images.unsplash.com/photo-1607799279861-4dd421887fb3?auto=format&fit=crop&w=640&q=80",
     description: "Benchmarking standard liquid themes against custom next.js page setups, optimizing images, and syncing cart tokens."
   },
   {
@@ -37,6 +40,7 @@ const DEFAULT_FEED = [
     date: "Mar 12, 2026",
     duration: "18:22",
     url: "https://youtube.com",
+    thumbnail: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=640&q=80",
     description: "A conference talk examining how custom block structures and API layers keep WordPress competitive alongside modern JS frameworks."
   }
 ];
@@ -59,7 +63,7 @@ export async function GET() {
       promises.push(
         fetch(
           `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${config.youtubeChannelId}&maxResults=6&order=date&type=video&key=${config.youtubeApiKey}`,
-          { next: { revalidate: 10 } } // Cache on server for 10 seconds
+          { next: { revalidate: 10 } }
         )
           .then((res) => (res.ok ? res.json() : null))
           .then((data) => {
@@ -75,6 +79,7 @@ export async function GET() {
                 }),
                 duration: "Video",
                 url: `https://youtube.com/watch?v=${item.id?.videoId}`,
+                thumbnail: item.snippet?.thumbnails?.high?.url || item.snippet?.thumbnails?.medium?.url || "",
                 description: item.snippet?.description || ""
               }));
               aggregatedFeed.push(...ytItems);
@@ -89,7 +94,7 @@ export async function GET() {
       promises.push(
         fetch(
           `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,permalink,timestamp&access_token=${config.instagramAccessToken}&limit=6`,
-          { next: { revalidate: 10 } } // Cache on server for 10 seconds
+          { next: { revalidate: 10 } }
         )
           .then((res) => (res.ok ? res.json() : null))
           .then((data) => {
@@ -105,6 +110,7 @@ export async function GET() {
                 }),
                 duration: item.media_type === "VIDEO" ? "Reel" : "Post",
                 url: item.permalink,
+                thumbnail: item.media_url || "",
                 description: item.caption || ""
               }));
               aggregatedFeed.push(...igItems);
@@ -114,7 +120,49 @@ export async function GET() {
       );
     }
 
-    // Wait for all active API calls to settle (maximum 4s timeout)
+    // 3. LinkedIn RSS Fetch Promise
+    if (config.linkedinFeedUrl) {
+      promises.push(
+        fetch(config.linkedinFeedUrl, { next: { revalidate: 10 } })
+          .then((res) => (res.ok ? res.text() : null))
+          .then((xmlText) => {
+            if (xmlText) {
+              const items: any[] = [];
+              const itemRegex = /<item>([\s\S]*?)<\/item>/g;
+              let match;
+              while ((match = itemRegex.exec(xmlText)) !== null) {
+                const itemContent = match[1];
+                const title = itemContent.match(/<title>([\s\S]*?)<\/title>/)?.[1] || "LinkedIn Post";
+                const link = itemContent.match(/<link>([\s\S]*?)<\/link>/)?.[1] || "https://linkedin.com";
+                const desc = itemContent.match(/<description>([\s\S]*?)<\/description>/)?.[1] || "";
+                const pubDate = itemContent.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1] || new Date().toISOString();
+                
+                const cleanTitle = title.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1").trim();
+                const cleanDesc = desc.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1").replace(/<[^>]*>/g, "").trim();
+
+                items.push({
+                  id: link,
+                  title: cleanTitle.length > 60 ? cleanTitle.slice(0, 60) + "..." : cleanTitle,
+                  category: "LinkedIn",
+                  date: new Date(pubDate).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric"
+                  }),
+                  duration: "Post",
+                  url: link,
+                  thumbnail: "https://images.unsplash.com/photo-1579226905180-636b76d96082?auto=format&fit=crop&w=640&q=80", // LinkedIn placeholder background
+                  description: cleanDesc.slice(0, 180) + (cleanDesc.length > 180 ? "..." : "")
+                });
+              }
+              aggregatedFeed.push(...items.slice(0, 6));
+            }
+          })
+          .catch((err) => console.error("LinkedIn RSS fetch error:", err))
+      );
+    }
+
+    // Wait for active API calls to settle (maximum 4s timeout)
     if (promises.length > 0) {
       await Promise.race([
         Promise.all(promises),

@@ -162,6 +162,28 @@ export async function GET() {
       );
     }
 
+    // 4. LinkedIn Database Curated Posts Fetch
+    promises.push(
+      db.linkedinPost.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 10
+      })
+        .then((dbPosts) => {
+          const formattedDbPosts = dbPosts.map((post) => ({
+            id: post.id,
+            title: post.title,
+            category: "LinkedIn",
+            date: post.date,
+            duration: "Post",
+            url: post.url,
+            thumbnail: "https://images.unsplash.com/photo-1579226905180-636b76d96082?auto=format&fit=crop&w=640&q=80",
+            description: post.description
+          }));
+          aggregatedFeed.push(...formattedDbPosts);
+        })
+        .catch((err) => console.error("Database LinkedIn fetch error:", err))
+    );
+
     // Wait for active API calls to settle (maximum 4s timeout)
     if (promises.length > 0) {
       await Promise.race([

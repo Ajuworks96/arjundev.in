@@ -5,7 +5,7 @@ import { SessionProvider, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { 
   LayoutDashboard, User, Sparkles, Milestone, Briefcase, 
-  FileText, Image, Mail, Settings, LogOut, ChevronRight, Menu, X 
+  FileText, Image, Mail, Settings, LogOut, ChevronRight, Menu, X, Linkedin
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -47,6 +47,7 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
     { label: "Journey Timeline", href: "/admin/journey", icon: Milestone },
     { label: "Projects / Case Studies", href: "/admin/projects", icon: Briefcase },
     { label: "Blog Editor", href: "/admin/blog", icon: FileText },
+    { label: "LinkedIn Posts", href: "/admin/linkedin-posts", icon: Linkedin },
     { label: "Media Library", href: "/admin/media", icon: Image },
     { label: "Lead Contacts", href: "/admin/leads", icon: Mail },
     { label: "CMS Settings", href: "/admin/settings", icon: Settings },

@@ -192,3 +192,12 @@ model CmsConfig {
   linkedinFeedUrl      String?
   updatedAt            DateTime @updatedAt
 }
+
+model LinkedinPost {
+  id           String   @id @default(uuid())
+  title        String
+  url          String   // Direct post link
+  description  String   @db.Text
+  date         String   // e.g., "Jun 30, 2026"
+  createdAt    DateTime @default(now())
+}

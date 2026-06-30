@@ -190,6 +190,8 @@ model CmsConfig {
   youtubeApiKey        String?
   instagramAccessToken String?
   linkedinFeedUrl      String?
+  linkedinAccessToken  String?
+  linkedinPersonUrn    String?
   updatedAt            DateTime @updatedAt
 }
 

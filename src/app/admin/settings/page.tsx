@@ -16,6 +16,8 @@ export default function AdminSettingsManager() {
     youtubeApiKey: "",
     instagramAccessToken: "",
     linkedinFeedUrl: "",
+    linkedinAccessToken: "",
+    linkedinPersonUrn: "",
   });
 
   useEffect(() => {
@@ -32,6 +34,8 @@ export default function AdminSettingsManager() {
             youtubeApiKey: data.youtubeApiKey || "",
             instagramAccessToken: data.instagramAccessToken || "",
             linkedinFeedUrl: data.linkedinFeedUrl || "",
+            linkedinAccessToken: data.linkedinAccessToken || "",
+            linkedinPersonUrn: data.linkedinPersonUrn || "",
           });
         }
       } catch (e) {
@@ -193,7 +197,7 @@ export default function AdminSettingsManager() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">LinkedIn RSS Feed URL</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">LinkedIn RSS Feed URL (Fallback)</label>
               <input
                 type="text"
                 value={form.linkedinFeedUrl}
@@ -201,9 +205,30 @@ export default function AdminSettingsManager() {
                 placeholder="https://rss.app/feeds/..."
                 className="w-full px-4 py-2.5 bg-slate-950/60 border border-slate-800 focus:border-yellow-400/40 rounded-xl outline-none text-xs text-white placeholder-slate-600 transition-colors font-mono"
               />
-              <p className="text-[10px] text-slate-500 mt-1">
-                ⚠️ LinkedIn blocks direct profile URL access. You must convert your public LinkedIn posts to an RSS feed using a free service like <a href="https://rss.app" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:underline">RSS.app</a> or <a href="https://fetchrss.com" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:underline">FetchRSS</a>, and paste the generated XML URL here.
-              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 border-t border-slate-905/30 pt-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">LinkedIn API Access Token</label>
+              <input
+                type="password"
+                value={form.linkedinAccessToken}
+                onChange={(e) => setForm({ ...form, linkedinAccessToken: e.target.value })}
+                placeholder="AQWxxxxxx..."
+                className="w-full px-4 py-2.5 bg-slate-950/60 border border-slate-800 focus:border-yellow-400/40 rounded-xl outline-none text-xs text-white placeholder-slate-655 transition-colors font-mono"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">LinkedIn Person URN (ID)</label>
+              <input
+                type="text"
+                value={form.linkedinPersonUrn}
+                onChange={(e) => setForm({ ...form, linkedinPersonUrn: e.target.value })}
+                placeholder="e.g. urn:li:person:xxxxxx"
+                className="w-full px-4 py-2.5 bg-slate-950/60 border border-slate-800 focus:border-yellow-400/40 rounded-xl outline-none text-xs text-white placeholder-slate-600 transition-colors font-mono"
+              />
             </div>
           </div>
         </div>

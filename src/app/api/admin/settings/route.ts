@@ -22,7 +22,7 @@ export async function PUT(request: Request) {
 
   try {
     const body = await request.json();
-    const { provider, apiUrl, apiKey, youtubeChannelId, youtubeApiKey, instagramAccessToken, linkedinFeedUrl } = body;
+    const { provider, apiUrl, apiKey, youtubeChannelId, youtubeApiKey, instagramAccessToken, linkedinFeedUrl, linkedinAccessToken, linkedinPersonUrn } = body;
 
     if (!provider) {
       return NextResponse.json({ error: "Provider is required" }, { status: 400 });
@@ -38,6 +38,8 @@ export async function PUT(request: Request) {
         youtubeApiKey: youtubeApiKey || "",
         instagramAccessToken: instagramAccessToken || "",
         linkedinFeedUrl: linkedinFeedUrl || "",
+        linkedinAccessToken: linkedinAccessToken || "",
+        linkedinPersonUrn: linkedinPersonUrn || "",
       },
       create: {
         id: "singleton",
@@ -48,6 +50,8 @@ export async function PUT(request: Request) {
         youtubeApiKey: youtubeApiKey || "",
         instagramAccessToken: instagramAccessToken || "",
         linkedinFeedUrl: linkedinFeedUrl || "",
+        linkedinAccessToken: linkedinAccessToken || "",
+        linkedinPersonUrn: linkedinPersonUrn || "",
       }
     });
 

@@ -162,6 +162,46 @@ export async function GET() {
       );
     }
 
+    // 3.5. LinkedIn Official API Fetch Promise
+    if (config.linkedinAccessToken && config.linkedinPersonUrn) {
+      promises.push(
+        fetch(
+          `https://api.linkedin.com/v2/posts?author=${config.linkedinPersonUrn}&count=10`,
+          {
+            headers: {
+              "Authorization": `Bearer ${config.linkedinAccessToken}`,
+              "X-Restli-Protocol-Version": "2.0.0"
+            },
+            next: { revalidate: 10 }
+          }
+        )
+          .then((res) => (res.ok ? res.json() : null))
+          .then((data) => {
+            if (data?.elements) {
+              const liItems = data.elements.map((item: any) => {
+                const comment = item.commentary || item.text?.text || "LinkedIn Post";
+                return {
+                  id: item.id,
+                  title: comment.split("\n")[0].slice(0, 60) + (comment.length > 60 ? "..." : ""),
+                  category: "LinkedIn",
+                  date: new Date(item.createdAt || Date.now()).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric"
+                  }),
+                  duration: "Post",
+                  url: `https://www.linkedin.com/feed/update/${item.id}`,
+                  thumbnail: "https://images.unsplash.com/photo-1579226905180-636b76d96082?auto=format&fit=crop&w=640&q=80",
+                  description: comment.slice(0, 180) + (comment.length > 180 ? "..." : "")
+                };
+              });
+              aggregatedFeed.push(...liItems);
+            }
+          })
+          .catch((err) => console.error("LinkedIn official API fetch error:", err))
+      );
+    }
+
     // 4. LinkedIn Database Curated Posts Fetch
     promises.push(
       db.linkedinPost.findMany({

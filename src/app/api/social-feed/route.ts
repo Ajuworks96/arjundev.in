@@ -59,7 +59,7 @@ export async function GET() {
       promises.push(
         fetch(
           `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${config.youtubeChannelId}&maxResults=6&order=date&type=video&key=${config.youtubeApiKey}`,
-          { next: { revalidate: 3600 } } // Cache on server for 1 hour
+          { next: { revalidate: 10 } } // Cache on server for 10 seconds
         )
           .then((res) => (res.ok ? res.json() : null))
           .then((data) => {
@@ -89,7 +89,7 @@ export async function GET() {
       promises.push(
         fetch(
           `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,permalink,timestamp&access_token=${config.instagramAccessToken}&limit=6`,
-          { next: { revalidate: 3600 } } // Cache on server for 1 hour
+          { next: { revalidate: 10 } } // Cache on server for 10 seconds
         )
           .then((res) => (res.ok ? res.json() : null))
           .then((data) => {

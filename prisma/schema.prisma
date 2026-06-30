@@ -192,6 +192,7 @@ model CmsConfig {
   linkedinFeedUrl      String?
   linkedinAccessToken  String?
   linkedinPersonUrn    String?
+  linkedinWidgetCode   String?  @db.Text
   updatedAt            DateTime @updatedAt
 }
 

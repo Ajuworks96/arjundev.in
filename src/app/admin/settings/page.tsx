@@ -18,6 +18,7 @@ export default function AdminSettingsManager() {
     linkedinFeedUrl: "",
     linkedinAccessToken: "",
     linkedinPersonUrn: "",
+    linkedinWidgetCode: "",
   });
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export default function AdminSettingsManager() {
             linkedinFeedUrl: data.linkedinFeedUrl || "",
             linkedinAccessToken: data.linkedinAccessToken || "",
             linkedinPersonUrn: data.linkedinPersonUrn || "",
+            linkedinWidgetCode: data.linkedinWidgetCode || "",
           });
         }
       } catch (e) {
@@ -230,6 +232,20 @@ export default function AdminSettingsManager() {
                 className="w-full px-4 py-2.5 bg-slate-950/60 border border-slate-800 focus:border-yellow-400/40 rounded-xl outline-none text-xs text-white placeholder-slate-600 transition-colors font-mono"
               />
             </div>
+          </div>
+
+          <div className="space-y-1.5 border-t border-slate-905/30 pt-4">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-400">LinkedIn Feed Widget Embed Code (Free-Forever Automated Method)</label>
+            <textarea
+              rows={3}
+              value={form.linkedinWidgetCode}
+              onChange={(e) => setForm({ ...form, linkedinWidgetCode: e.target.value })}
+              placeholder="Paste HTML embed code from a free service like SociableKIT, Elfsight, or RSS-Bridge here..."
+              className="w-full px-4 py-2.5 bg-slate-950/60 border border-slate-800 focus:border-yellow-400/40 rounded-xl outline-none text-xs text-white placeholder-slate-600 transition-colors font-mono resize-none"
+            />
+            <p className="text-[10px] text-slate-500 mt-1">
+              💡 <b>Recommended Free-Forever Way:</b> You can create a free account on <a href="https://www.sociablekit.com" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:underline">SociableKIT</a> or <a href="https://elfsight.com" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:underline">Elfsight</a>, connect your personal LinkedIn account, and paste the generated JavaScript/iframe HTML embed code here. It will render automatically on the Media page under the LinkedIn tab!
+            </p>
           </div>
         </div>
 

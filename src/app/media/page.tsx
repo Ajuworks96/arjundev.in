@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Video, Youtube, ExternalLink, Calendar, Instagram, Linkedin, Github, X, MessageSquare } from "lucide-react";
 
@@ -101,6 +101,7 @@ const SOCIAL_CHANNELS = [
 export default function Media() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [mediaItems, setMediaItems] = useState<any[]>(MEDIA_ITEMS);
+  const [linkedinWidgetCode, setLinkedinWidgetCode] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
 
@@ -117,8 +118,13 @@ export default function Media() {
         const res = await fetch("/api/social-feed");
         if (res.ok) {
           const data = await res.json();
-          if (data && data.length > 0) {
-            setMediaItems(data);
+          if (data) {
+            if (data.items) {
+              setMediaItems(data.items);
+              setLinkedinWidgetCode(data.linkedinWidgetCode || "");
+            } else if (Array.isArray(data) && data.length > 0) {
+              setMediaItems(data);
+            }
           }
         }
       } catch (e) {
@@ -193,66 +199,33 @@ export default function Media() {
         ))}
       </div>
 
-      {/* Media Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {filteredMedia.map((item) => (
-          <motion.div
-            key={item.id}
-            whileHover={{ y: -4 }}
-            className="glassmorphism rounded-2xl border border-slate-900/60 overflow-hidden shadow-sm flex flex-col justify-between"
-          >
-            {/* Visual Header representing Video thumbnail */}
-            <div className="aspect-video bg-slate-950 flex items-center justify-center relative group overflow-hidden">
-              {item.thumbnail && (
-                <img 
-                  src={item.thumbnail} 
-                  alt={item.title}
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              )}
-              {/* Dark overlay */}
-              <div className="absolute inset-0 bg-slate-950/60 group-hover:bg-slate-950/30 transition-colors duration-300" />
-              
-              {/* Play icon overlay */}
-              <button 
-                onClick={() => {
-                  const ytid = getYoutubeId(item.url);
-                  if (item.category === "YouTube" && ytid) {
-                    setActiveVideoId(ytid);
-                  } else {
-                    window.open(item.url, "_blank");
-                  }
-                }}
-                className="w-12 h-12 rounded-full bg-white/20 hover:bg-white/35 backdrop-blur text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200 z-10 cursor-pointer"
-              >
-                <Play className="w-5 h-5 fill-current" />
-              </button>
-              
-              <span className="absolute bottom-3 right-3 text-[10px] bg-black/60 text-white px-2 py-0.5 rounded font-bold z-10">{item.duration}</span>
-              
-              {/* Category indicator badge */}
-              <span className="absolute top-3 left-3 text-[9px] bg-[#ffff3f] text-slate-950 px-2 py-0.5 rounded font-bold uppercase tracking-wider z-10">
-                {item.category}
-              </span>
-            </div>
-
-            {/* Description Body */}
-            <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase">
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span>{item.date}</span>
-                </div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white leading-tight">
-                  {item.title}
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-
-              <div className="pt-4 border-t border-slate-250/10 dark:border-slate-800/40">
-                <button
+      {/* Media Grid or Embedded LinkedIn Widget */}
+      {activeCategory === "LinkedIn" && linkedinWidgetCode ? (
+        <div className="glassmorphism p-6 rounded-3xl border border-slate-900/60 overflow-hidden w-full min-h-[500px] flex items-center justify-center">
+          <LinkedInWidgetEmbed htmlCode={linkedinWidgetCode} />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {filteredMedia.map((item) => (
+            <motion.div
+              key={item.id}
+              whileHover={{ y: -4 }}
+              className="glassmorphism rounded-2xl border border-slate-900/60 overflow-hidden shadow-sm flex flex-col justify-between"
+            >
+              {/* Visual Header representing Video thumbnail */}
+              <div className="aspect-video bg-slate-950 flex items-center justify-center relative group overflow-hidden">
+                {item.thumbnail && (
+                  <img 
+                    src={item.thumbnail} 
+                    alt={item.title}
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                )}
+                {/* Dark overlay */}
+                <div className="absolute inset-0 bg-slate-950/60 group-hover:bg-slate-950/30 transition-colors duration-300" />
+                
+                {/* Play icon overlay */}
+                <button 
                   onClick={() => {
                     const ytid = getYoutubeId(item.url);
                     if (item.category === "YouTube" && ytid) {
@@ -261,16 +234,55 @@ export default function Media() {
                       window.open(item.url, "_blank");
                     }
                   }}
-                  className="w-full flex items-center justify-center gap-1.5 py-2.5 bg-[#ffff3f] hover:bg-yellow-500 text-slate-950 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md"
+                  className="w-12 h-12 rounded-full bg-white/20 hover:bg-white/35 backdrop-blur text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-200 z-10 cursor-pointer"
                 >
-                  <span>{item.category === "YouTube" ? "Play Video" : "Open Post"}</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  <Play className="w-5 h-5 fill-current" />
                 </button>
+                
+                <span className="absolute bottom-3 right-3 text-[10px] bg-black/60 text-white px-2 py-0.5 rounded font-bold z-10">{item.duration}</span>
+                
+                {/* Category indicator badge */}
+                <span className="absolute top-3 left-3 text-[9px] bg-[#ffff3f] text-slate-950 px-2 py-0.5 rounded font-bold uppercase tracking-wider z-10">
+                  {item.category}
+                </span>
               </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+
+              {/* Description Body */}
+              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase">
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span>{item.date}</span>
+                  </div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white leading-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-slate-250/10 dark:border-slate-800/40">
+                  <button
+                    onClick={() => {
+                      const ytid = getYoutubeId(item.url);
+                      if (item.category === "YouTube" && ytid) {
+                        setActiveVideoId(ytid);
+                      } else {
+                        window.open(item.url, "_blank");
+                      }
+                    }}
+                    className="w-full flex items-center justify-center gap-1.5 py-2.5 bg-[#ffff3f] hover:bg-yellow-500 text-slate-950 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md"
+                  >
+                    <span>{item.category === "YouTube" ? "Play Video" : "Open Post"}</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
 
       {/* Dynamic YouTube Video Modal Player */}
       <AnimatePresence>
@@ -306,4 +318,24 @@ export default function Media() {
 
     </div>
   );
+}
+
+function LinkedInWidgetEmbed({ htmlCode }: { htmlCode: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current || !htmlCode) return;
+
+    // Clear previous contents
+    containerRef.current.innerHTML = "";
+
+    // Create a range to parse the HTML string and extract scripts
+    const range = document.createRange();
+    const documentFragment = range.createContextualFragment(htmlCode);
+
+    // Append to container
+    containerRef.current.appendChild(documentFragment);
+  }, [htmlCode]);
+
+  return <div ref={containerRef} className="w-full h-full min-h-[450px]" />;
 }

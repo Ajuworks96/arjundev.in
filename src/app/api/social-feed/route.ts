@@ -234,15 +234,24 @@ export async function GET() {
 
     // If both API feeds came back empty, fall back to Default seed items
     if (aggregatedFeed.length === 0) {
-      return NextResponse.json(DEFAULT_FEED);
+      return NextResponse.json({
+        items: DEFAULT_FEED,
+        linkedinWidgetCode: config?.linkedinWidgetCode || ""
+      });
     }
 
     // Sort feed items chronologically (latest date first)
     aggregatedFeed.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-    return NextResponse.json(aggregatedFeed);
+    return NextResponse.json({
+      items: aggregatedFeed,
+      linkedinWidgetCode: config?.linkedinWidgetCode || ""
+    });
   } catch (e) {
     console.error("Failed to aggregate dynamic social feed:", e);
-    return NextResponse.json(DEFAULT_FEED);
+    return NextResponse.json({
+      items: DEFAULT_FEED,
+      linkedinWidgetCode: ""
+    });
   }
 }

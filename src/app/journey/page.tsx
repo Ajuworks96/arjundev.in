@@ -192,8 +192,8 @@ export default function Journey() {
                       isSelected 
                         ? "text-blue-650 dark:text-blue-400 font-extrabold" 
                         : isCompleted 
-                          ? "text-slate-700 dark:text-slate-250" 
-                          : "text-slate-405 dark:text-slate-600"
+                          ? "text-slate-700 dark:text-slate-200" 
+                          : "text-slate-400 dark:text-slate-500"
                     }`}>
                       {ms.role}
                     </span>
@@ -214,7 +214,7 @@ export default function Journey() {
 
                     {/* Period Date text */}
                     <span className={`text-[9px] font-bold mt-3 transition-colors duration-305 ${
-                      isSelected ? "text-slate-850 dark:text-slate-250" : "text-slate-405 dark:text-slate-500"
+                      isSelected ? "text-slate-800 dark:text-slate-200" : "text-slate-400 dark:text-slate-500"
                     }`}>
                       {ms.period}
                     </span>
